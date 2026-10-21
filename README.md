@@ -3,7 +3,8 @@
 <p align="center"><b>Give your Google TV a clean, fast, ad-free home screen in one conversation with an AI agent.</b><br>
 Tell Claude Code or Codex which apps you want. It does the rest over your Wi-Fi, and every change can be undone.</p>
 
-<p align="center"><img src="docs/screenshots/home.jpg" alt="Liftoff home screen: weather, clock, a short list of apps and a Now Playing card over a photo of Earth from space" width="100%"></p>
+<p align="center"><img src="docs/screenshots/home.jpg" alt="Liftoff home screen: weather, clock and a short list of apps over a space photo" width="100%"><br>
+<sub>The background is NASA's picture of the day and changes every morning. Shown: Webb's "Cosmic Cliffs" (NASA, ESA, CSA, STScI).</sub></p>
 
 <p align="center">
 <a href="#quick-start">Quick start</a> ·
@@ -31,7 +32,7 @@ learn ADB.
    ```
 3. **Paste this**, with your own apps:
    > Set up Liftoff on my TV. I want Netflix, YouTube, Spotify and Plex on the home screen.
-   > Weather for Austin, TX. Follow AGENTS.md.
+   > Weather for Austin, TX. My lights are Philips Hue. Follow AGENTS.md.
 
 The agent finds your TV, backs it up, builds the home screen, shows you what it wants to turn off, and
 waits for your OK before it touches anything. When the TV asks *"Allow USB debugging?"*, choose
@@ -42,15 +43,19 @@ waits for your OK before it touches anything. When the TV asks *"Allow USB debug
 **A home screen that's just your apps.** An alphabetical text list, a big clock, today's weather, and
 nothing else. No ads, no rows, no trailers. Press the gear for the TV's own settings.
 
-**A new background every morning.** NASA's Astronomy Picture of the Day, or the bundled SpaceX
-"Starman" photo, or your own picture.
+**A new background every morning.** By default the home screen wears NASA's Astronomy Picture of the
+Day, fetched fresh each morning. Prefer something fixed? Use the bundled SpaceX "Starman" photo or your own.
 
 **Now Playing.** When music plays (Spotify or any app you choose), a glass card with the album art,
-song and artist floats in the corner of the home screen.
+song and artist floats in the corner of the home screen. It shows on the home screen only and gets out
+of the way the moment you open an app.
 
-**Lights, if you have them.** Govee lamps with LAN Control get a retro terminal panel with animated
-scenes (Aurora, Synthwave, Fireplace, Party…) and basics (Movie, Warm, Night). Local network only: no
-Govee account, no cloud.
+<p align="center"><img src="docs/screenshots/now-playing.jpg" alt="Now Playing card with album art, song title and artist" width="55%"></p>
+
+**Lights, if you have them.** Philips Hue, Govee, WLED, or anything Home Assistant controls (LIFX,
+Nanoleaf, Kasa, Zigbee, Matter…) get a retro terminal panel with animated scenes (Aurora, Synthwave,
+Fireplace, Party…) and basics (Movie, Warm, Night). Local network only, no cloud. No lights? The entry
+just doesn't show.
 
 <p align="center"><img src="docs/screenshots/lights.png" alt="Lights panel: green-on-black terminal style buttons for scenes and basics" width="80%"></p>
 
@@ -103,7 +108,7 @@ scripts/undo.sh                          # whenever you want it all back
 ```
 
 Extras: `scripts/key.sh home|back|ok|…`, `scripts/screenshot.sh`, `scripts/ui.sh`,
-`scripts/youtube.sh <url>`, `scripts/govee.py <ip> on|off|color r g b`.
+`scripts/youtube.sh <url>`, `scripts/lights.py find|pair|test|on|off`.
 
 ## FAQ
 

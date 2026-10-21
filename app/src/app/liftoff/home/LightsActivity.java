@@ -12,25 +12,24 @@ import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/** Govee lights over the Govee LAN API (UDP 4003). Needs "LAN Control" on in the Govee Home app. */
+/** The Lights panel: scenes and basics for whatever lights liftoff.json sets up (see Lights). */
 public class LightsActivity extends Activity {
-    static String[] lamps(android.content.Context c) { return Config.get(c).lamps.toArray(new String[0]); }
     // Terminal look: black screen, phosphor-green text.
     static final int INK = Color.rgb(51, 255, 102), PAPER = Color.BLACK, DIM = Color.argb(150, 51, 255, 102);
 
     final ExecutorService net = Executors.newSingleThreadExecutor();
     int brightness = 70;
     TextView status;
+    Lights lights;
 
     @Override protected void onCreate(Bundle b) {
         super.onCreate(b);
-        Scenes.LAMPS = lamps(this);
+        lights = Lights.from(Config.get(this).lights);
+        if (lights == null) { finish(); return; }
+        Scenes.lights = lights;
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
         root.setBackgroundColor(PAPER);
@@ -38,7 +37,7 @@ public class LightsActivity extends Activity {
 
         TextView title = text("> LIGHTS", 34, true);
         root.addView(title);
-        status = text(lamps(this).length + " lights ready_", 18, false);
+        status = text(lights.count() + (lights.count() == 1 ? " light" : " lights") + " ready_", 18, false);
         status.setTextColor(DIM);
         status.setPadding(0, 4, 0, 24);
         root.addView(status);
@@ -132,19 +131,17 @@ public class LightsActivity extends Activity {
 
     void say(String s) { status.setText("> " + s.toLowerCase() + "_"); }
 
-    void turn(int on) { send("{\"msg\":{\"cmd\":\"turn\",\"data\":{\"value\":" + on + "}}}"); }
-    void bright(int v) { send("{\"msg\":{\"cmd\":\"brightness\",\"data\":{\"value\":" + v + "}}}"); }
-    void temp(int k) { turn(1); send("{\"msg\":{\"cmd\":\"colorwc\",\"data\":{\"color\":{\"r\":0,\"g\":0,\"b\":0},\"colorTemInKelvin\":" + k + "}}}"); }
-    void color(int r, int g, int b) { turn(1); send("{\"msg\":{\"cmd\":\"colorwc\",\"data\":{\"color\":{\"r\":" + r + ",\"g\":" + g + ",\"b\":" + b + "},\"colorTemInKelvin\":0}}}"); }
+    interface Cmd { void run(int i) throws Exception; }
 
-    void send(String json) {
+    void each(Cmd cmd) {
         net.execute(() -> {
-            try (DatagramSocket s = new DatagramSocket()) {
-                byte[] data = json.getBytes("UTF-8");
-                for (String ip : lamps(this)) s.send(new DatagramPacket(data, data.length, InetAddress.getByName(ip), 4003));
-            } catch (Exception e) {
-                runOnUiThread(() -> status.setText("> error: lights unreachable_"));
-            }
+            try { for (int i = 0; i < lights.count(); i++) cmd.run(i); }
+            catch (Exception e) { runOnUiThread(() -> status.setText("> error: lights unreachable_")); }
         });
     }
+
+    void turn(int on) { each(i -> lights.power(i, on == 1)); }
+    void bright(int v) { each(i -> lights.bright(i, v)); }
+    void temp(int k) { each(i -> { lights.power(i, true); lights.temp(i, k); }); }
+    void color(int r, int g, int b) { each(i -> { lights.power(i, true); lights.color(i, r, g, b); }); }
 }

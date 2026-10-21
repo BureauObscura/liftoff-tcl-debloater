@@ -12,9 +12,13 @@ import org.json.JSONObject;
 /** Reads assets/liftoff.json, which scripts/build.sh copies from the user's liftoff.json. */
 final class Config {
     static final class App { final String label, pkg; App(String l, String p) { label = l; pkg = p; } }
+    static final class LightsConf {
+        String provider = "govee", host = "", token = "", label = "Lights";
+        final List<String> devices = new ArrayList<>();
+    }
 
     final List<App> apps = new ArrayList<>();
-    final List<String> lamps = new ArrayList<>();
+    LightsConf lights; // null when no lights are set up: the Lights entry is hidden
     final List<String> nowPlayingPackages = new ArrayList<>();
     final boolean weather, celsius, clock24h;
     final double lat, lon;
@@ -38,10 +42,16 @@ final class Config {
             JSONObject o = a.optJSONObject(i);
             if (o != null) apps.add(new App(o.optString("label"), o.optString("package")));
         }
-        JSONObject lights = j.optJSONObject("lights");
-        JSONArray g = lights == null ? null : lights.optJSONArray("govee");
-        if (g != null) for (int i = 0; i < g.length(); i++) lamps.add(g.optString(i));
-        if (!lamps.isEmpty()) apps.add(new App(lights.optString("label", "Lights"), c.getPackageName()));
+        JSONObject l = j.optJSONObject("lights");
+        if (l != null) {
+            LightsConf lc = new LightsConf();
+            lc.provider = l.optString("provider", "govee").toLowerCase().replaceAll("[^a-z]", "");
+            lc.host = l.optString("host"); lc.token = l.optString("token"); lc.label = l.optString("label", "Lights");
+            JSONArray d = l.optJSONArray("devices");
+            if (d == null) d = l.optJSONArray("govee"); // older configs
+            if (d != null) for (int i = 0; i < d.length(); i++) lc.devices.add(d.optString(i));
+            if (!lc.devices.isEmpty()) { lights = lc; apps.add(new App(lc.label, c.getPackageName())); }
+        }
         Collections.sort(apps, (x, y) -> x.label.compareToIgnoreCase(y.label));
 
         JSONObject w = j.optJSONObject("weather");

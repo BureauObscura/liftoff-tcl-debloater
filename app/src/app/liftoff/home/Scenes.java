@@ -1,12 +1,9 @@
 package app.liftoff.home;
 
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.util.Random;
 
 /**
- * Animated and two-light scenes for Govee lights (LAN API, UDP 4003). With more than two lights,
+ * Animated and two-color scenes for any Lights provider. With more than two lights,
  * odd and even lights alternate between the scene's two colors.
  * Runs on its own thread inside the app process, which OverlayService keeps alive,
  * so a scene keeps going after you leave the Lights screen. Any plain button stops it.
@@ -14,7 +11,7 @@ import java.util.Random;
 final class Scenes {
     interface Frame { /** @return {r,g,b, r,g,b, brightness} for lamp 0 and lamp 1 at time t seconds */ int[] at(double t); }
 
-    static String[] LAMPS = new String[0]; // set by LightsActivity before a scene starts
+    static Lights lights; // set by LightsActivity before a scene starts
     private static Thread runner;
     private static volatile int generation;
     private static final Random rnd = new Random();
@@ -23,34 +20,29 @@ final class Scenes {
 
     static void play(Frame f, long stepMs) {
         final int gen = ++generation;
+        final Lights l = lights;
+        if (l == null) return;
+        final long step = stepMs == 0 ? 0 : Math.max(stepMs, l.minStepMs());
         runner = new Thread(() -> {
             int[] last = null;
             long t0 = System.currentTimeMillis();
-            try (DatagramSocket s = new DatagramSocket()) {
-                send(s, -1, "{\"msg\":{\"cmd\":\"turn\",\"data\":{\"value\":1}}}");
+            try {
+                for (int i = 0; i < l.count(); i++) l.power(i, true);
                 while (gen == generation) {
                     int[] c = f.at((System.currentTimeMillis() - t0) / 1000.0);
-                    for (int i = 0; i < 2; i++) {
-                        if (last == null || last[i * 3] != c[i * 3] || last[i * 3 + 1] != c[i * 3 + 1] || last[i * 3 + 2] != c[i * 3 + 2])
-                            send(s, i, "{\"msg\":{\"cmd\":\"colorwc\",\"data\":{\"color\":{\"r\":" + c[i * 3] + ",\"g\":" + c[i * 3 + 1]
-                                    + ",\"b\":" + c[i * 3 + 2] + "},\"colorTemInKelvin\":0}}}");
+                    for (int i = 0; i < l.count(); i++) {
+                        int k = (i % 2) * 3;
+                        if (last == null || last[k] != c[k] || last[k + 1] != c[k + 1] || last[k + 2] != c[k + 2]) l.color(i, c[k], c[k + 1], c[k + 2]);
+                        if (last == null || last[6] != c[6]) l.bright(i, c[6]);
                     }
-                    if (last == null || last[6] != c[6])
-                        send(s, -1, "{\"msg\":{\"cmd\":\"brightness\",\"data\":{\"value\":" + c[6] + "}}}");
                     last = c;
-                    if (stepMs == 0) break; // static scene: set once
-                    Thread.sleep(stepMs);
+                    if (step == 0) break; // static scene: set once
+                    Thread.sleep(step);
                 }
             } catch (Exception ignored) { }
         });
         runner.setDaemon(true);
         runner.start();
-    }
-
-    private static void send(DatagramSocket s, int lamp, String json) throws Exception {
-        byte[] d = json.getBytes("UTF-8");
-        for (int i = 0; i < LAMPS.length; i++)
-            if (lamp < 0 || lamp == i % 2) s.send(new DatagramPacket(d, d.length, InetAddress.getByName(LAMPS[i]), 4003));
     }
 
     // ---- helpers ----

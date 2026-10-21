@@ -46,8 +46,9 @@ pick **Always allow from this computer** and press OK. Run `find-tv.sh` again un
 Ask, in one short message:
 - **Which apps** should be on the home screen? (e.g. "Netflix, YouTube, Spotify, Plex")
 - **Where are they?** City or ZIP, for weather — or no weather. Fahrenheit or Celsius? 12 or 24-hour clock?
-- **Background:** NASA's Astronomy Picture of the Day (changes daily), the bundled SpaceX Starman photo, or their own image?
-- **Govee lights** with LAN Control? (optional)
+- **Background:** the default is NASA's Astronomy Picture of the Day, new every morning. Only ask if they'd rather have a fixed picture (the bundled SpaceX Starman photo, or their own).
+- **Smart lights?** Which brand, if any (Govee, Philips Hue, WLED, or anything in Home Assistant).
+  No lights is fine: the Lights entry simply doesn't appear.
 - **Ad-blocking DNS** (AdGuard DNS for the whole TV)? Default yes.
 
 Then:
@@ -55,7 +56,7 @@ Then:
   packages (`catalog/apps.tsv` helps). If an app they want isn't installed, tell them to install it
   from the Play Store with the remote, then re-run `apps.sh`.
 - Look up latitude/longitude for their city yourself (round to 2 decimals). Don't store a street address.
-- For Govee: `python3 scripts/govee.py scan` lists lights that have LAN Control on.
+- Lights: follow "Setting up lights" below.
 
 ## 3. Write liftoff.json
 
@@ -67,8 +68,11 @@ Then:
 | `apps` | `[{label, package}]` — shown alphabetically; missing apps are skipped |
 | `weather` | `{latitude, longitude, units: "fahrenheit"\|"celsius"}`, or remove the key for no weather |
 | `nowPlaying.packages` | apps whose music shows in the Now Playing card; `[]` = any app |
-| `lights.govee` | Govee light IPs; empty = no Lights entry. `lights.label` renames it |
-| `background.mode` | `"apod"` (NASA daily, falls back to the image) or `"image"` |
+| `lights.provider` | `govee`, `hue`, `wled` or `homeassistant` (see "Setting up lights") |
+| `lights.devices` | the lights to control; empty or missing = no Lights entry on the home screen |
+| `lights.host`, `lights.token` | Hue bridge IP + token, or Home Assistant URL + token |
+| `lights.label` | what the entry is called on the home screen (default "Lights") |
+| `background.mode` | `"apod"` (default: NASA's picture of the day, new every morning; falls back to the image on video days) or `"image"` |
 | `background.image` | optional path to your own 1920×1080 `.png`/`.jpg`; default is Starman |
 | `clock.24h` | `true` for a 24-hour clock |
 | `tweaks.animationScale` | `0.5` makes menus snappier; remove to leave alone |
@@ -110,6 +114,23 @@ Tell the user what changed (apps disabled, tweaks, new Home), and how to undo:
 
 Remind them: if they ever want a TCL firmware update and disabled `com.tcl.ttvs`, re-enable it first.
 
+## Setting up lights
+
+Lights are optional. Liftoff only talks to lights over the home network (no cloud accounts). Pick the
+user's brand, fill in `lights` in `liftoff.json`, then run `python3 scripts/lights.py test`: every light
+should go red, blue, then warm white. Ask the user whether it worked before you move on.
+
+| Brand | `provider` | What goes in `liftoff.json` | How to get it |
+|---|---|---|---|
+| **Govee** | `govee` | `devices`: light IPs | User turns on **LAN Control** per light in the Govee Home app. Then `scripts/lights.py find govee` |
+| **Philips Hue** | `hue` | `host`: bridge IP, `token`, `devices`: light ids like `"1"` | `lights.py find hue`; the user presses the bridge's round button; `lights.py pair hue <ip>` prints the token; `lights.py list hue <ip> <token>` shows ids |
+| **WLED** | `wled` | `devices`: controller IPs | From the WLED app or the router |
+| **Anything else** (LIFX, Nanoleaf, Kasa, Zigbee, Matter…) via **Home Assistant** | `homeassistant` | `host`: e.g. `http://homeassistant.local:8123`, `token`, `devices`: entity ids like `light.living_room` | The **user** creates a long-lived token (Profile → Security) and pastes it into `liftoff.json` themselves (rule 6). `lights.py list homeassistant <url> <token>` shows entity ids |
+
+If the brand isn't listed and the user has no Home Assistant, say so and skip lights. Don't install
+vendor apps or sign into vendor accounts for them. Tell the user to reserve each light's IP in their
+router so it doesn't change. With more than two lights, scenes alternate their two colors across the lights.
+
 ## Changing things later
 
 - Edit `liftoff.json`, then `scripts/build.sh && scripts/install.sh`.
@@ -122,7 +143,7 @@ Remind them: if they ever want a TCL firmware update and disabled `com.tcl.ttvs`
 
 `scripts/key.sh home|back|ok|up|down|left|right|play|vol+|vol-|sleep|wake` · `scripts/ui.sh` (what's on
 screen, focused item marked `[*]`) · `scripts/screenshot.sh` · `scripts/youtube.sh <url>` ·
-`scripts/govee.py <ip> on|off|color r g b|temp K|bright N`
+`scripts/lights.py on|off|test`
 
 ## Known gotchas
 

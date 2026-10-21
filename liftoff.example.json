@@ -10,7 +10,7 @@
 
   "weather": { "latitude": 40.7128, "longitude": -74.0060, "units": "fahrenheit" },
   "nowPlaying": { "packages": ["com.spotify.tv.android"] },
-  "lights": { "label": "Lights", "govee": [] },
+  "lights": { "provider": "govee", "devices": [], "host": "", "token": "", "label": "Lights" },
   "background": { "mode": "apod", "image": null },
   "clock": { "24h": false },
 
