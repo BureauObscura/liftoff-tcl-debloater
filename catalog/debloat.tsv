@@ -1,0 +1,45 @@
+package	name	category	risk	why
+tv.samba.ssm.ui	Samba TV	tracking	safe	Identifies what's on screen (including HDMI) to sell ad data.
+com.tcl.ttvs	TCL core service (TTVS)	tracking	caution	Usage analytics, Samba hooks, Alexa and TCL firmware updates. Re-enable it before checking for a TV firmware update.
+com.tcl.guard	TCL Guard	tracking	safe	Device-usage tracker. Some models restart it at boot anyway (stopping it fully needs root, which Liftoff never uses).
+com.tcl.partnercustomizer	TCL launcher customizer	ads	safe	Puts TCL promos into the Google TV home screen.
+com.tcl.logkit	TCL Logkit	tracking	safe	Collects and uploads logs.
+com.tcl.messagebox	TCL Message Box	ads	safe	Promo pop-ups.
+com.tcl.smartlink.core	TCL silent installer	ads	safe	Installs apps on its own at boot.
+com.google.android.feedback	Google Feedback	tracking	safe	Sends feedback and crash reports.
+android.autoinstalls.config.google.gtvpai	Play Auto Install	ads	safe	Pushes preinstalled promo apps back onto the TV.
+com.google.android.videos	Google TV (Freeplay)	home	safe	Google TV store and free movies.
+com.google.android.apps.tv.launcherx	Google TV home screen	home	risky	The stock home screen. Only disable after Liftoff is the Home app. On some TVs this (or the setup app) forgets saved Wi-Fi; have the Wi-Fi password or Ethernet ready.
+com.google.android.tungsten.setupwraith	Google TV setup / fallback home	home	risky	Can grab the Home button back. Disabling it made one TV forget its saved Wi-Fi. Usually not needed: set-home-activity is enough.
+com.tcl.dashboard	TCL Home	home	safe	TCL's home panel.
+com.tcl.tv.tclhome_passive	TCL Home (passive)	home	safe	Second TCL home app.
+com.tcl.waterfall.overseas	TCL home feed	home	safe	TCL movie and show feed.
+com.google.android.apps.mediashell	Chromecast built-in	casting	caution	Casting from phones. Keep it if the user casts.
+com.google.android.katniss	Google Assistant	voice	caution	The remote's mic button. Keep it if the user uses voice search.
+com.tcl.assistant	TCL Assistant wrapper	voice	caution	Routes the remote's mic to Google Assistant.
+com.tcl.smartalexa	Alexa	voice	safe	Amazon Alexa integration.
+com.tcl.esticker	eSticker	junk	safe	Showroom feature stickers.
+com.tcl.exhibit	Store demo mode	junk	safe	Showroom demo.
+com.tcl.gamebar	Game Bar	junk	safe	Gaming overlay.
+com.tcl.ui_mediaCenter	Media	junk	caution	USB media player. Keep it if the user plays files from USB drives.
+com.tcl.repairguide	Repair Guide	junk	safe	Troubleshooting guide.
+com.tcl.usercenter	TCL account	junk	safe	TCL sign-in.
+com.tcl.ocean.instructions	User Guide	junk	safe	Built-in manual.
+com.tcl.channelplus	TCL Channel	streaming	safe	Free ad-supported live channels.
+com.tcl.tv.tclchannel	TCL Channel (2)	streaming	safe	Free ad-supported live channels.
+com.tcl.tv.plus	TCL TV+	streaming	safe	Free ad-supported live channels.
+com.google.android.play.games	Play Games	streaming	safe	Google Play Games.
+com.google.android.youtube.tvmusic	YouTube Music	streaming	safe	Preinstalled streaming app.
+com.google.android.youtube.tvunplugged	YouTube TV	streaming	safe	Preinstalled streaming app.
+com.dazn	DAZN	streaming	safe	Preinstalled streaming app.
+com.disney.disneyplus	Disney+	streaming	safe	Preinstalled streaming app.
+com.fox.foxone	Fox One	streaming	safe	Preinstalled streaming app.
+com.hulu.livingroomplus	Hulu	streaming	safe	Preinstalled streaming app.
+com.wbd.stream	Max	streaming	safe	Preinstalled streaming app.
+com.cbs.ott	Paramount+	streaming	safe	Preinstalled streaming app.
+com.peacocktv.peacockandroid	Peacock	streaming	safe	Preinstalled streaming app.
+com.plexapp.android	Plex	streaming	safe	Preinstalled streaming app.
+tv.pluto.android	Pluto TV	streaming	safe	Preinstalled streaming app.
+com.sm.SlingGuide.Dish	Sling TV	streaming	safe	Preinstalled streaming app.
+com.tubitv	Tubi	streaming	safe	Preinstalled streaming app.
+com.tuckercarlson.tv	Tucker Carlson Network	streaming	safe	Preinstalled streaming app.

@@ -1,0 +1,10 @@
+# Your own settings and everything generated from them
+liftoff.json
+build/
+state/
+.keystore/
+.toolchain/
+*.apk
+*.idsig
+.DS_Store
+__pycache__/

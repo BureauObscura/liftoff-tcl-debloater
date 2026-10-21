@@ -1,0 +1,26 @@
+name	package
+Apple TV	com.apple.atve.androidtv.appletv
+BrowseHere (TCL browser)	com.tcl.browser
+Crunchyroll	com.crunchyroll.crunchyroid
+DAZN	com.dazn
+Disney+	com.disney.disneyplus
+Hulu	com.hulu.livingroomplus
+Jellyfin	org.jellyfin.androidtv
+Kodi	org.xbmc.kodi
+MasterClass	com.yanka.mc.tv.prod.android
+Max	com.wbd.stream
+Netflix	com.netflix.ninja
+Paramount+	com.cbs.ott
+Peacock	com.peacocktv.peacockandroid
+Play Store	com.android.vending
+Plex	com.plexapp.android
+Pluto TV	tv.pluto.android
+Prime Video	com.amazon.amazonvideo.livingroom
+Sling TV	com.sm.SlingGuide.Dish
+Spotify	com.spotify.tv.android
+Tubi	com.tubitv
+VLC	org.videolan.vlc
+YouTube	com.google.android.youtube.tv
+YouTube Music	com.google.android.youtube.tvmusic
+YouTube TV	com.google.android.youtube.tvunplugged
+Settings	com.android.tv.settings

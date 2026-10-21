@@ -1,0 +1,23 @@
+{
+  "tv": "192.168.1.50:5555",
+
+  "apps": [
+    { "label": "Netflix",     "package": "com.netflix.ninja" },
+    { "label": "Prime Video", "package": "com.amazon.amazonvideo.livingroom" },
+    { "label": "Spotify",     "package": "com.spotify.tv.android" },
+    { "label": "YouTube",     "package": "com.google.android.youtube.tv" }
+  ],
+
+  "weather": { "latitude": 40.7128, "longitude": -74.0060, "units": "fahrenheit" },
+  "nowPlaying": { "packages": ["com.spotify.tv.android"] },
+  "lights": { "label": "Lights", "govee": [] },
+  "background": { "mode": "apod", "image": null },
+  "clock": { "24h": false },
+
+  "tweaks": {
+    "animationScale": 0.5,
+    "privateDns": "dns.adguard-dns.com",
+    "tclPrivacySwitches": true,
+    "noBackground": ["com.google.android.youtube.tv"]
+  }
+}
