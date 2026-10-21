@@ -27,7 +27,7 @@ learn ADB.
    Then Settings → System → Developer options → turn on **USB debugging**.
 2. **On your computer** (macOS or Linux), clone this repo and open your agent in it:
    ```bash
-   git clone https://github.com/OWNER/liftoff && cd liftoff
+   git clone https://github.com/BureauObscura/liftoff-tcl-debloater && cd liftoff-tcl-debloater
    claude        # or: codex
    ```
 3. **Paste this**, with your own apps:
